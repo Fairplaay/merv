@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  database: # name of the service
+    image: mvertes/alpine-mongo:4.0.5-0
+    container_name: mongodb # name of container
+    ports:
+      - "27017:27017"
+
+  api_web:      # name the second service
+    build: api  # specify the directory of the dockerfile
+    container_name: nodejs
+    volumes:
+      - ./api:/usr/src/api # copy files in containers
+    ports:
+      - "3001:3001" # specify port mapping
+    environment:
+      PORT: 3001
+      DB_CONNECT: mongodb://mongodb:27017/merv
+      TOKEN_SECRET: gjh123kjhklhjlkjkfds
+    links:
+      - database
+
+  app_web:          # name the firs service
+    build: app # specify the directory of the dockerfile
+    container_name: vuejs
+    volumes:
+      - ./app:/usr/src/app # copy files in containers
+    ports:
+      - "8080:8080" # specify port mapping
